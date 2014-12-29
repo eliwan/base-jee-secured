@@ -1,0 +1,737 @@
+<!--
+  ~ This file is part of base-jee-secured.
+  ~ Copyright (c) Eliwan bvba, Belgium.
+  ~
+  ~ The program is available in open source according to the Apache License, Version 2.0. 
+  ~ For full licensing details, see LICENSE.txt in the project root.  
+  -->
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>be.eliwan</groupId>
+    <artifactId>base-jee-secured-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>base-jee-secured Parent</name>
+
+    <modules>
+        <module>war</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <dbHostPort>localhost:5432</dbHostPort>
+        <dbAdminUser>postgres</dbAdminUser>
+        <dbAdminPassword>postgres</dbAdminPassword>
+
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.itReportPath>${project.basedir}/../target/itjacoco.exec</sonar.jacoco.itReportPath>
+        <sonar.language>java</sonar.language>
+
+        <env>test</env>
+
+        <servlet.port>8080</servlet.port>
+
+        <hibernate.version>4.2.7.SP1</hibernate.version>
+        <querydsl.version>3.3.0</querydsl.version>
+        <postgresql.version>9.3-1100-jdbc41</postgresql.version>
+        <jtransfo.version>0.12</jtransfo.version>
+        <deltaspike.version>0.6</deltaspike.version>
+        <wildfly.version>8.2.0.Final</wildfly.version>
+
+        <wildfly.home.parent>${project.basedir}/.cargo/extracts/wildfly-${wildfly.version}/wildfly-${wildfly.version}</wildfly.home.parent>
+        <wildfly.home.module>${project.basedir}/../.cargo/extracts/wildfly-${wildfly.version}/wildfly-${wildfly.version}</wildfly.home.module>
+        <jboss.home>${wildfly.home.module}</jboss.home>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jboss-maven2-release-repository</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>be.eliwan</groupId>
+                <artifactId>base-jee-secured-war</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>1.0.0.Beta2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.2.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-version</artifactId>
+                <version>${wildfly.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>7.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jtransfo</groupId>
+                <artifactId>jtransfo-core</artifactId>
+                <version>${jtransfo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jtransfo</groupId>
+                <artifactId>jtransfo-cdi</artifactId>
+                <version>${jtransfo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-api</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-impl</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.modules</groupId>
+                <artifactId>deltaspike-data-module-api</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.modules</groupId>
+                <artifactId>deltaspike-data-module-impl</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.modules</groupId>
+                <artifactId>deltaspike-jpa-module-api</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.modules</groupId>
+                <artifactId>deltaspike-jpa-module-impl</artifactId>
+                <version>${deltaspike.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mysema.querydsl</groupId>
+                <artifactId>querydsl-apt</artifactId>
+                <version>${querydsl.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mysema.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>${querydsl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.14.8</version>
+            </dependency>
+
+            <!-- logging - route everything through slf4j -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>1.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit-dep</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.9.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>2.41.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-server</artifactId>
+                <version>2.41.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${wildfly.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                <version>${wildfly.version}</version>
+            </dependency>
+
+            <!-- need to fix these versions for Arquillian when combined with Wildfly- they have conflicts in their deps -->
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-aether-provider</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model-builder</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-repository-metadata</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tapestry</groupId>
+                <artifactId>tapestry-test</artifactId>
+                <version>${tapestry.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Provided by the servlet container, but sometimes referenced in the application code. -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- transitive dependency version fixes -->
+            <dependency>
+                <groupId>antlr</groupId>
+                <artifactId>antlr</artifactId>
+                <version>2.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.3.04</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>12.0</version>
+            </dependency>
+
+            <!-- for java8 support -->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>2.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>5.0_BETA</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flyway</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>3.0</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.mysema.maven</groupId>
+                    <artifactId>apt-maven-plugin</artifactId>
+                    <version>1.0.9</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>process</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.basedir}/target/generated-sources/querydsl</outputDirectory>
+                                <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <version>1.5</version>
+
+                    <dependencies>
+                        <!-- specify the dependent jdbc driver here -->
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>${postgresql.version}</version>
+                        </dependency>
+                    </dependencies>
+
+                    <!-- common configuration shared by all executions -->
+                    <configuration>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://${dbHostPort}/postgres</url>
+                        <username>${dbAdminUser}</username>
+                        <password>${dbAdminPassword}</password>
+                    </configuration>
+
+                    <executions>
+                        <execution>
+                            <id>drop and create</id>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <phase>generate-test-resources</phase>
+                            <configuration>
+                                <!-- need another database to drop/create the targeted one -->
+                                <url>jdbc:postgresql://${dbHostPort}/postgres</url>
+                                <autocommit>true</autocommit>
+                                <sqlCommand>
+                                    drop database eliwan_test;
+                                    create database eliwan_test encoding 'UTF8';
+                                    CREATE ROLE eliwan LOGIN ENCRYPTED PASSWORD 'eliwan'
+                                        SUPERUSER INHERIT CREATEDB NOCREATEROLE;
+                                    alter database eliwan_test OWNER TO eliwan;
+                                    grant all on database eliwan_test to eliwan;
+                                </sqlCommand>
+                                <onError>continue</onError>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.cargo</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.4.7</version>
+                    <configuration>
+                        <container>
+                            <containerId>wildfly8x</containerId>
+                            <log>${basedir}/target/cargo.log</log>
+                            <output>${basedir}/target/wildfly.log</output>
+                            <zipUrlInstaller>
+                                <url>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</url>
+                                <downloadDir>${project.basedir}/../.cargo/downloads</downloadDir>
+                                <extractDir>${project.basedir}/../.cargo/extracts</extractDir>
+                            </zipUrlInstaller>
+                        </container>
+                        <configuration>
+                            <properties>
+                                <cargo.servlet.port>${servlet.port}</cargo.servlet.port>
+                                <cargo.logging>medium</cargo.logging>
+                                <cargo.jvmargs>${argLine} -Denv=test -Dtapestry.execution-mode=development</cargo.jvmargs>
+                                <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
+                            </properties>
+                        </configuration>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>start-cargo</id>
+                            <phase>pre-integration-test</phase>
+                            <goals><goal>start</goal></goals>
+                            <configuration>
+                                <deployables>
+                                    <deployable>
+                                        <!-- Use exploded deploy: override location to point to the exploded webapp. -->
+                                        <location>${project.basedir}/target/${project.artifactId}-${project.version}</location>
+                                        <pingURL>http://localhost:${servlet.port}/ft/eliwan</pingURL>
+                                        <pingTimeout>60000</pingTimeout> <!-- 1 min -->
+                                        <properties>
+                                            <context>ft</context>
+                                        </properties>
+                                    </deployable>
+                                </deployables>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>stop-cargo</id>
+                            <phase>post-integration-test</phase>
+                            <goals><goal>stop</goal></goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.7</version>
+                    <executions>
+                        <execution>
+                            <id>clean</id>
+                            <configuration>
+                                <tasks>
+                                    <delete dir="${wildfly.home.module}/standalone/data"/>
+                                    <delete dir="${wildfly.home.module}/standalone/log"/>
+                                    <delete dir="${wildfly.home.module}/standalone/tmp"/>
+                                </tasks>
+                            </configuration>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <requireUpperBoundDeps/>
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <optimize>true</optimize>
+                    <encoding>utf8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.11</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14.1</version>
+                <configuration>
+                    <argLine>${argLine} -Xmx1124m -Xms256m</argLine>
+                    <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <jboss.home>${jboss.home}</jboss.home>
+                        <module.path>${jboss.home}/modules</module.path>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <argLine>${argLine} -Xmx1024m -Xms256m</argLine>
+                    <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <jboss.home>${jboss.home}</jboss.home>
+                        <module.path>${jboss.home}/modules</module.path>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>nocoverage</id>
+            <activation>
+                <property>
+                    <name>!coverage</name>
+                </property>
+            </activation>
+            <properties>
+                <argLine></argLine> <!-- empty default -->
+            </properties>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <activation>
+                <property>
+                    <name>coverage</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <includes>be.vlaanderen.awv.dc.*</includes>
+                            <destFile>${sonar.jacoco.reportPath}</destFile>
+                            <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pre-junit-test</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>pre-integration-test</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <includes>be.vlaanderen.awv.dc.*</includes>
+                                    <destFile>${sonar.jacoco.itReportPath}</destFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>post-test</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- setup wildfly container for use by cargo -->
+            <id>setup-cargo</id>
+            <activation>
+                <property>
+                    <name>setup</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <inherited>false</inherited>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <configuration>
+                            <container>
+                                <containerId>wildfly8x</containerId>
+                                <zipUrlInstaller>
+                                    <url>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</url>
+                                    <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
+                                    <extractDir>${project.basedir}/.cargo/extracts</extractDir>
+                                </zipUrlInstaller>
+                            </container>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install-cargo</id>
+                                <phase>process-test-resources</phase>
+                                <goals><goal>install</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <inherited>false</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.8</version>
+                        <executions>
+                            <execution>
+                                <id>copy-db-driver</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.postgresql</groupId>
+                                            <artifactId>postgresql</artifactId>
+                                            <version>${postgresql.version}</version>
+                                            <outputDirectory>${wildfly.home.parent}/standalone/deployments</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <inherited>false</inherited>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.6</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources-ds</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${wildfly.home.parent}/standalone/deployments</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>etc/wildfly/deploy/test</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

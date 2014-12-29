@@ -1,0 +1,89 @@
+<!--
+  ~ This file is part of FluxTock.
+  ~ Copyright (c) FluxTock, Belgium.
+  -->
+
+<!-- specific logging configuration for development -->
+<configuration debug="true">
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>~%property{log.appkey} %date{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%property{log.server}-%thread] %-5level %logger{36} - %msg%n%xEx</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${log.directory:-log}/dc.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+
+            <!-- with a maximum of 100MB in one file -->
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+
+            <!-- keep 30 days' worth of history -->
+            <!--<maxHistory>30</maxHistory>-->
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>~%property{log.appkey} %date{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%property{log.server}-%thread] %-5level %logger{36} - %msg%n%xEx</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Service category names are the name of the defining module class and then the service id. -->
+    <logger name="be.fluxtock.front.services.FluxTockModule.TimingFilter">
+        <level value="INFO"/>
+    </logger>
+
+    <!-- Outputs a list of pages, components and mixins at startup. -->
+    <logger name="org.apache.tapestry5.services.TapestryModule.ComponentClassResolver">
+        <level value="INFO"/>
+    </logger>
+
+    <!-- Outputs startup statistics; elapsed time to setup and initialize the registry, a list of
+        available services, and a launch banner that includes the Tapestry version number. -->
+    <logger name="org.apache.tapestry5.TapestryFilter">
+        <level value="INFO"/>
+    </logger>
+
+    <!-- Turning on debug mode for a page's or component's transformer logger
+        will show all of the code changes that occur when the class is loaded. -->
+    <!--
+    <logger name="tapestry.transformer.Index">
+        <level value="DEBUG"/>
+    </logger>
+    -->
+
+    <!-- Turning on debug mode for a component's events logger will show all the events triggered on the
+        component, and which component methods are invoked as a result. -->
+    <!--
+    <logger name="tapestry.events.Index">
+        <level value="DEBUG"/>
+    </logger>
+    -->
+
+    <!-- Turning on trace mode for a page's render logger provides extended information about every step
+        in rendering (this is not generally helpful).  Turning on debug mode will add a one-line
+        summary that includes the elapsed render time, which can be useful in tracking down
+        performance issues. -->
+    <!--
+    <logger name="tapestry.render.Index">
+        <level value="DEBUG"/>
+    </logger>
+    -->
+
+    <!-- Turn on some verbose debugging about everything in the application. This is nice initially,
+        while getting everything set up.  You'll probably want to remove this once you are
+        up and running, replacing it with more selective debugging output. -->
+    <logger name="be.fluxtock">
+        <level value="DEBUG"/>
+    </logger>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
