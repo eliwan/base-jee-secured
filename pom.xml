@@ -448,7 +448,7 @@
                                     <deployable>
                                         <!-- Use exploded deploy: override location to point to the exploded webapp. -->
                                         <location>${project.basedir}/target/${project.artifactId}-${project.version}</location>
-                                        <pingURL>http://localhost:${servlet.port}/ft/eliwan</pingURL>
+                                        <pingURL>http://localhost:${servlet.port}/index.html</pingURL>
                                         <pingTimeout>60000</pingTimeout> <!-- 1 min -->
                                         <properties>
                                             <context>ft</context>

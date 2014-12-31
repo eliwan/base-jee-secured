@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of FluxTock.
+  ~ Copyright (c) FluxTock, Belgium.
+  -->
+
+<jboss-web>
+    <context-root>/</context-root>
+</jboss-web>
